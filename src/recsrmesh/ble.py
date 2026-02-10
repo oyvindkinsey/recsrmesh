@@ -3,7 +3,9 @@
 import asyncio
 import logging
 import time
+from collections.abc import Callable
 from enum import IntEnum, auto
+from typing import Protocol
 
 from .crypto import (
     MASP_XOR_MASK,
@@ -29,6 +31,20 @@ CHARACTERISTIC_HIGH = "c4edc000-9daf-11e3-8004-00025b000b00"
 CCCD_UUID = "00002902-0000-1000-8000-00805f9b34fb"
 
 
+class BleClient(Protocol):
+    """Protocol interface for BLE client (e.g., bleak.BleakClient)."""
+
+    async def start_notify(
+        self, char: str, callback: Callable[[object, bytearray], None]
+    ) -> None: ...
+
+    async def stop_notify(self, char: str) -> None: ...
+
+    async def write_gatt_char(
+        self, char: str, data: bytes, response: bool = False
+    ) -> None: ...
+
+
 class AssociationState(IntEnum):
     """Association session states."""
     DISCONNECTED = auto()
@@ -48,7 +64,7 @@ class AssociationStateMachine:
 
     def __init__(
         self,
-        client,
+        client: BleClient,
         uuid_hash: int,
         passphrase: str,
         device_id: int | None = None,
@@ -71,6 +87,9 @@ class AssociationStateMachine:
 
     def feed_raw(self, raw: bytes):
         """Accept raw reassembled bytes from CSRMesh notification layer."""
+        if not raw:
+            return
+
         payload, valid = verify_packet_mac(raw, self.masp_key)
         if valid:
             raw = payload
@@ -108,9 +127,9 @@ class AssociationStateMachine:
                 assert request is not None
                 await self._send_masp_message(request)
 
-                deadline = time.time() + timeout
+                deadline = time.monotonic() + timeout
                 while True:
-                    remaining = deadline - time.time()
+                    remaining = deadline - time.monotonic()
                     if remaining <= 0:
                         break
 
@@ -166,11 +185,12 @@ class AssociationStateMachine:
 
     async def _wait_for_response(self, timeout: float) -> bytes | None:
         """Wait for complete response to arrive."""
-        start = time.time()
+        deadline = time.monotonic() + timeout
         while self.pending_response is None:
-            if time.time() - start > timeout:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
                 return None
-            await asyncio.sleep(0.01)
+            await asyncio.sleep(min(0.01, remaining))
 
         response = self.pending_response
         self.pending_response = None
@@ -179,6 +199,9 @@ class AssociationStateMachine:
 
 def _process_discovery_packet(raw: bytes, masp_key: bytes, results: list):
     """Process a received packet during discovery."""
+    if not raw:
+        return
+
     payload, valid = verify_packet_mac(raw, masp_key)
     if not valid:
         return

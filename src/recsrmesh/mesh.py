@@ -8,6 +8,7 @@ from .ble import (
     CHARACTERISTIC_HIGH,
     CHARACTERISTIC_LOW,
     AssociationStateMachine,
+    BleClient,
     _process_discovery_packet,
 )
 from .crypto import (
@@ -37,7 +38,7 @@ class CSRMesh:
                 responses = await mesh.receive(timeout=3.0)
     """
 
-    def __init__(self, client, passphrase: str):
+    def __init__(self, client: BleClient, passphrase: str):
         self.client = client
         self.passphrase = passphrase
         self._masp_key = derive_key("", "\x00MASP")
@@ -48,7 +49,7 @@ class CSRMesh:
         self._notifying = False
         self._raw_handler: Callable[[bytes], None] = self._mcp_handler
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> "CSRMesh":
         await self._start_notifications()
         return self
 
@@ -70,8 +71,9 @@ class CSRMesh:
         try:
             await self.client.stop_notify(CHARACTERISTIC_LOW)
             await self.client.stop_notify(CHARACTERISTIC_HIGH)
-        except (EOFError, Exception):
-            pass
+        except (OSError, EOFError):
+            # BLE connection may already be closed
+            logger.debug("BLE connection closed during stop_notify")
         self._notifying = False
 
     def _on_low(self, sender, data: bytearray):
@@ -80,7 +82,7 @@ class CSRMesh:
         self._low_buf = bytes(data)
         if self._low_timer is not None:
             self._low_timer.cancel()
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         self._low_timer = loop.call_later(0.2, self._flush_low_buf)
 
     def _flush_low_buf(self):
@@ -256,9 +258,10 @@ class CSRMesh:
                 break
 
         results = []
-        deadline = asyncio.get_event_loop().time() + timeout
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + timeout
         while True:
-            remaining = deadline - asyncio.get_event_loop().time()
+            remaining = deadline - loop.time()
             if remaining <= 0:
                 break
             try:

@@ -1,9 +1,12 @@
 """MASP protocol state machine for CSRMesh association."""
 
+import logging
 from enum import IntEnum, auto
 
 from .crypto import xor_masp_packet
 from .masp import CSRMeshAssociation, MaspOpcode
+
+logger = logging.getLogger(__name__)
 
 
 class ProtocolState(IntEnum):
@@ -85,6 +88,9 @@ class ProtocolStateMachine:
         if self.state == ProtocolState.ERROR:
             return None
 
+        if not response_before_xor:
+            return None
+
         wire = xor_masp_packet(response_before_xor)
         opcode = response_before_xor[0]
 
@@ -117,8 +123,11 @@ class ProtocolStateMachine:
                         self.error = "ECDH computation failed"
                         self.state = ProtocolState.ERROR
                         return None
-                    assert self.assoc.shared_secret is not None
-                    print(f"  [ECDH]        shared_secret={self.assoc.shared_secret.hex()}")
+                    if self.assoc.shared_secret is None:
+                        self.error = "ECDH shared_secret is None after computation"
+                        self.state = ProtocolState.ERROR
+                        return None
+                    logger.debug(f"  [ECDH] shared_secret={self.assoc.shared_secret.hex()}")
                 self.state = ProtocolState.WAIT_CONFIRM_RESPONSE
             return self._build_next_request()
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "recsrmesh"
-version = "0.1.0"
+version = "0.2.0"
 description = "CSRMesh protocol library"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -32,7 +32,6 @@ classifiers = [
 dependencies = [
     "bleak>=0.21.0",
     "cryptography>=41.0.0",
-    "pycryptodomex>=3.23.0",
 ]
 
 [project.optional-dependencies]
