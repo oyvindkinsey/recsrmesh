@@ -1,0 +1,378 @@
+{
+  "metadata": {
+    "capture_date": "2026-02-06T06:54:17.899Z",
+    "device_mac": "UNKNOWN",
+    "device_uuid_hash": "0x3c324685",
+    "assigned_device_id": 33896
+  },
+  "crypto_material": {
+    "ecdh_shared_secret": "a8 c1 4a a2 fe d5 6b ef f7 7e f3 99 28 35 78 1c \n                         69 4c 5e 45 28 68 e0 c7",
+    "random_nonces": [
+      "61 fb a6 f9 15 0d c6 bd"
+    ],
+    "ecdh_public_key_y": "49 b4 74 0a e1 03 8b f1 85 4e 34 21 4e fd 3e a9 c2 bb 72 53 d7 1c d0 b7",
+    "ecdh_public_key_x": "da 2f d1 f8 56 9a e5 f3 9e 43 0d 11 59 30 68 1d 28 62 18 43 5e 55 57 ad"
+  },
+  "events": [
+    {
+      "seq": 1,
+      "timestamp_ms": 18135,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "50 a5 6c 0b 7c 18 c5 41 aa d1 7d 26 05 d5 2c c9 \n                         05 f7 c9 c7"
+      }
+    },
+    {
+      "seq": 2,
+      "timestamp_ms": 18142,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "06 75 1f 37"
+      }
+    },
+    {
+      "seq": 3,
+      "timestamp_ms": 18312,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "51 a5 6c 0b 7c 19 0d",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 4,
+      "timestamp_ms": 18336,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "56 a5 6c 0b 7c 18 8d f5 de db 9c 25 8e 24 7f 84 \n                         3d dc 7f 25"
+      }
+    },
+    {
+      "seq": 5,
+      "timestamp_ms": 18348,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "dd 1d db 37"
+      }
+    },
+    {
+      "seq": 6,
+      "timestamp_ms": 18570,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "57 a5 6c 0b 7c 18 29 b4 05 f0 cf fe b1 f8 b5",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 7,
+      "timestamp_ms": 18601,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "56 a5 6c 0b 7c 19 41 0f 9e f0 33 db 3b 7c 7f 17 \n                         ca d1 ee ca"
+      }
+    },
+    {
+      "seq": 8,
+      "timestamp_ms": 18612,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "2f 35 61 37"
+      }
+    },
+    {
+      "seq": 9,
+      "timestamp_ms": 18824,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "57 a5 6c 0b 7c 19 cb 75 49 b4 08 f6 2c 25 b4",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 10,
+      "timestamp_ms": 18847,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "56 a5 6c 0b 7c 1a 06 fa d8 82 aa 3a d5 62 7f 8b \n                         d7 e0 8b 48"
+      }
+    },
+    {
+      "seq": 11,
+      "timestamp_ms": 18854,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "1d fd ab 37"
+      }
+    },
+    {
+      "seq": 12,
+      "timestamp_ms": 19140,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "57 a5 6c 0b 7c 1a 32 2b 74 1c 82 2b 22 4e b3",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 13,
+      "timestamp_ms": 19166,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "56 a5 6c 0b 7c 1b 1e 6e 7b 29 2b bc e0 26 7f 84 \n                         16 4f d3 b5"
+      }
+    },
+    {
+      "seq": 14,
+      "timestamp_ms": 19173,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "c5 d2 3e 37"
+      }
+    },
+    {
+      "seq": 15,
+      "timestamp_ms": 19502,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "57 a5 6c 0b 7c 1b fc cd 16 4a a5 60 c4 bb b2",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 16,
+      "timestamp_ms": 19527,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "56 a5 6c 0b 7c 1c 5a 02 a7 c0 24 16 6d c8 7f 68 \n                         3d c5 87 2a"
+      }
+    },
+    {
+      "seq": 17,
+      "timestamp_ms": 19533,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "dd 01 9f 37"
+      }
+    },
+    {
+      "seq": 18,
+      "timestamp_ms": 19771,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "57 a5 6c 0b 7c 1c 01 b5 de 3d 0e ee 17 9c b1",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 19,
+      "timestamp_ms": 19793,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "56 a5 6c 0b 7c 1d ec 23 b2 92 23 73 52 78 7f fc \n                         77 28 55 d3"
+      }
+    },
+    {
+      "seq": 20,
+      "timestamp_ms": 19803,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "d7 5c b3 37"
+      }
+    },
+    {
+      "seq": 21,
+      "timestamp_ms": 20174,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "57 a5 6c 0b 7c 1d cf 7a 23 10 22 b1 46 8b b0",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 22,
+      "timestamp_ms": 20302,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "54 a5 6c 0b 7c 52 21 eb 54 da 7a 01 eb d5 2b 4f \n                         2d c8 90 9b"
+      }
+    },
+    {
+      "seq": 23,
+      "timestamp_ms": 20311,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "7f 32 37"
+      }
+    },
+    {
+      "seq": 24,
+      "timestamp_ms": 20584,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "55 a5 6c 0b 7c b1 18 2d 77 9a 77 7a ed 05",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 25,
+      "timestamp_ms": 20615,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "5a a5 6c 0b 7c 79 3f e7 53 c4 70 e0 b8 d5 70 67 \n                         e2 fb 03 a5"
+      }
+    },
+    {
+      "seq": 26,
+      "timestamp_ms": 20627,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "91 02 37"
+      }
+    },
+    {
+      "seq": 27,
+      "timestamp_ms": 20767,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "5b a5 6c 0b 7c 0f 7f 4e a2 bd b0 95 77 04",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 28,
+      "timestamp_ms": 20805,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "58 a5 6c 0b 7c 6f e6 41 aa 4b c4 34 00 20 c0 35 \n                         37"
+      }
+    },
+    {
+      "seq": 29,
+      "timestamp_ms": 23249,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "53 90 ed a6 fd ce d8 55 aa d1 6f 26 05 d5 7f ae \n                         2c 8c",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 30,
+      "timestamp_ms": 24382,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "59 a5 6c 0b 7c ca",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 31,
+      "timestamp_ms": 24409,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "5e a5 6c 0b 7c 18 5e fc a7 c7 0e 62 6d 80 7f d4 \n                         90 c3 7d c3"
+      }
+    },
+    {
+      "seq": 32,
+      "timestamp_ms": 24420,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "e5 5a 18 37"
+      }
+    },
+    {
+      "seq": 33,
+      "timestamp_ms": 24583,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "5f a5 6c 0b 7c 18 17",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    },
+    {
+      "seq": 34,
+      "timestamp_ms": 24613,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "5e a5 6c 0b 7c 19 ba bb 5e 08 de d5 e9 c7 7f 0a \n                         cd c5 04 61"
+      }
+    },
+    {
+      "seq": 35,
+      "timestamp_ms": 24621,
+      "type": "gatt_write",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8004-00025b000b00",
+        "write_type": "write_without_response",
+        "value": "62 a0 24 37"
+      }
+    },
+    {
+      "seq": 36,
+      "timestamp_ms": 24948,
+      "type": "notification",
+      "details": {
+        "characteristic": "c4edc000-9daf-11e3-8003-00025b000b00",
+        "value": "5f a5 6c 0b 7c 19 10",
+        "note": "Reassembled packet from MTL layer (may have originated from 8003+8004)"
+      }
+    }
+  ]
+}

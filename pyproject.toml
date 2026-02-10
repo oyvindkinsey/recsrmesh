@@ -1,0 +1,90 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "recsrmesh"
+version = "0.1.0"
+description = "CSRMesh protocol library"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "LGPL-3.0-or-later"}
+authors = [
+    {name = "Sean Kinsey", email = "oyvind@kinsey.no"}
+]
+keywords = [
+    "csrmesh",
+    "bluetooth",
+    "mesh",
+    "ble",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Home Automation",
+    "Topic :: System :: Hardware",
+]
+
+dependencies = [
+    "bleak>=0.21.0",
+    "cryptography>=41.0.0",
+    "pycryptodomex>=3.23.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.11.0",
+    "ruff>=0.1.0",
+    "mypy>=1.5.0",
+]
+test = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/oyvindkinsey/recsrmesh"
+Repository = "https://github.com/oyvindkinsey/recsrmesh"
+Issues = "https://github.com/oyvindkinsey/recsrmesh/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["recsrmesh*"]
+exclude = ["tests*"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--tb=short",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["F403", "F405"]
