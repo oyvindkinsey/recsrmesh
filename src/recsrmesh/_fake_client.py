@@ -2,6 +2,7 @@
 
 import asyncio
 from collections.abc import Callable
+from typing import Any
 
 
 class FakeBleakClient:
@@ -12,13 +13,15 @@ class FakeBleakClient:
     delivers notifications to handlers.
     """
 
-    def __init__(self, transcript: dict):
+    def __init__(self, transcript: dict[str, Any]):
         self.transcript = transcript
         self.event_ptr = 0
-        self.notification_handlers: dict[str, Callable] = {}
+        self.notification_handlers: dict[str, Callable[[Any, bytearray], None]] = {}
         self.connected = True
 
-    async def start_notify(self, char_uuid: str, callback: Callable):
+    async def start_notify(
+        self, char_uuid: str, callback: Callable[[Any, bytearray], None]
+    ) -> None:
         """Register notification handler, skip CCCD events."""
         self.notification_handlers[char_uuid] = callback
 
@@ -37,7 +40,7 @@ class FakeBleakClient:
         char_uuid: str,
         data: bytes,
         response: bool = True
-    ):
+    ) -> None:
         """Verify write matches transcript, then replay device response."""
         if self.event_ptr >= len(self.transcript["events"]):
             raise RuntimeError(
@@ -107,7 +110,7 @@ class FakeBleakClient:
     async def disconnect(self):
         self.connected = False
 
-    async def stop_notify(self, char_uuid: str):
+    async def stop_notify(self, char_uuid: str) -> None:
         pass
 
     def verify_complete(self):

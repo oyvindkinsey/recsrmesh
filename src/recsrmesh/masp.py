@@ -1,8 +1,8 @@
 """CSRMesh Association Protocol (MASP) state and handshake logic."""
 
 import hmac
+import logging
 import os
-from dataclasses import dataclass
 from enum import IntEnum
 
 from cryptography.hazmat.backends import default_backend
@@ -25,6 +25,8 @@ from .crypto import (
     xor_masp_packet,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class MaspOpcode(IntEnum):
     """MASP protocol opcodes (logical values before XOR)."""
@@ -42,26 +44,6 @@ class MaspOpcode(IntEnum):
     DEVICE_ID_ACK = 0x0B
     NETKEY_DIST = 0x0C
     NETKEY_ACK = 0x0D
-
-
-class AssocState(IntEnum):
-    """Association state machine states."""
-    IDLE = 2
-    ASSOC_REQUEST_SENT = 3
-    PUBKEY_REQUEST_SENT = 4
-    CONFIRM_REQUEST_SENT = 5
-    RANDOM_REQUEST_SENT = 6
-    WAIT_ID_DIST_ACK = 7
-    NETKEY_DISTRIBUTE_SENT = 8
-
-
-@dataclass
-class AssociationResult:
-    """Result of a successful association."""
-    device_id: int
-    uuid_hash31: int
-    success: bool
-    error: str | None = None
 
 
 class CSRMeshAssociation:
@@ -91,7 +73,6 @@ class CSRMeshAssociation:
         self.shared_secret: bytes | None = None
 
         # Association state
-        self.state = AssocState.IDLE
         self.uuid_hash31: int = 0
         self.uuid_hash31_bytes: bytes = b"\x00\x00\x00\x00"
         self.device_id: int | None = None
@@ -146,6 +127,9 @@ class CSRMeshAssociation:
         Parse association response (opcode 0x03).
         Returns (success, confirm_type).
         """
+        if len(data) < 6:
+            return False, -1
+
         decrypted = xor_masp_packet(data)
 
         if decrypted[0] != MaspOpcode.ASSOC_RESPONSE:
@@ -176,6 +160,8 @@ class CSRMeshAssociation:
         # Combined pubkey: Y first, then X (both little-endian)
         combined = self.pub_y_le + self.pub_x_le
         start = self.pubkey_chunk_index * 8
+        if start + 8 > len(combined):
+            start = len(combined) - 8
         packet[6:14] = combined[start:start + 8]
         packet[14] = 0x00
 
@@ -183,6 +169,9 @@ class CSRMeshAssociation:
 
     def parse_pubkey_response(self, data: bytes) -> bool:
         """Parse public key response (opcode 0x05)."""
+        if len(data) < 14:
+            return False
+
         decrypted = xor_masp_packet(data)
 
         if decrypted[0] != MaspOpcode.PUBKEY_RESPONSE:
@@ -199,7 +188,9 @@ class CSRMeshAssociation:
         if offset < 24:
             self.device_pub_y[offset:offset + 8] = chunk_data
         else:
-            self.device_pub_x[offset - 24:offset - 24 + 8] = chunk_data
+            x_offset = offset - 24
+            if x_offset + 8 <= 24:
+                self.device_pub_x[x_offset:x_offset + 8] = chunk_data
 
         self.pubkey_rx_index += 1
         return True
@@ -218,7 +209,7 @@ class CSRMeshAssociation:
             self.shared_secret = reverse_bytes(shared)
             return True
         except Exception as e:
-            print(f"ECDH computation failed: {e}")
+            logger.error(f"ECDH computation failed: {e}")
             return False
 
     def _build_confirm_data(self, is_local: bool) -> bytes:
@@ -255,6 +246,9 @@ class CSRMeshAssociation:
 
     def parse_confirm_response(self, data: bytes) -> bool:
         """Parse confirmation response (opcode 0x07)."""
+        if len(data) < 13:
+            return False
+
         decrypted = xor_masp_packet(data)
 
         if decrypted[0] != MaspOpcode.CONFIRM_RESPONSE:
@@ -275,6 +269,9 @@ class CSRMeshAssociation:
 
     def parse_random_response(self, data: bytes) -> bool:
         """Parse random response (opcode 0x09)."""
+        if len(data) < 13:
+            return False
+
         decrypted = xor_masp_packet(data)
 
         if decrypted[0] != MaspOpcode.RANDOM_RESPONSE:
@@ -282,12 +279,15 @@ class CSRMeshAssociation:
 
         self.device_random = decrypted[5:13]
 
+        if self.device_confirm is None:
+            logger.error("device_confirm is None in parse_random_response")
+            return False
+
         verify_data = self._build_confirm_data(is_local=False)
         expected_confirm = hmac_sha256_truncated(verify_data, self.device_random, 8)
 
-        assert self.device_confirm is not None
         if not hmac.compare_digest(self.device_confirm, expected_confirm):
-            print("Device confirmation verification failed!")
+            logger.error("Device confirmation verification failed!")
             return False
 
         return True
@@ -296,11 +296,13 @@ class CSRMeshAssociation:
         """Build device ID distribution packet (opcode 0x0A)."""
         self.device_id = device_id
 
-        assert self.shared_secret is not None
+        if self.shared_secret is None:
+            raise RuntimeError("shared_secret is None in build_device_id_packet")
+
         id_bytes = int_to_bytes_le(device_id, 2)
         encrypted_id = xor_encrypt(id_bytes, self.shared_secret, "DeviceID")
 
-        print(f"  [DEVID]       id={device_id} (0x{device_id:04x}), id_bytes={id_bytes.hex()}, encrypted={encrypted_id.hex()}")
+        logger.debug(f"  [DEVID] id={device_id} (0x{device_id:04x}), id_bytes={id_bytes.hex()}, encrypted={encrypted_id.hex()}")
 
         packet = bytearray(8)
         packet[0] = MaspOpcode.DEVICE_ID_DIST
@@ -310,17 +312,22 @@ class CSRMeshAssociation:
 
         plain = bytes(packet)
         xored = xor_masp_packet(plain)
-        print(f"  [DEVID]       plain={plain.hex()}, xored={xored.hex()}")
+        logger.debug(f"  [DEVID] plain={plain.hex()}, xored={xored.hex()}")
         return xored
 
     def parse_device_id_ack(self, data: bytes) -> bool:
         """Parse device ID acknowledgment (opcode 0x0B)."""
+        if len(data) < 1:
+            return False
+
         decrypted = xor_masp_packet(data)
         return decrypted[0] == MaspOpcode.DEVICE_ID_ACK
 
     def build_netkey_packet(self) -> bytes:
         """Build network key distribution packet (opcode 0x0C)."""
-        assert self.shared_secret is not None
+        if self.shared_secret is None:
+            raise RuntimeError("shared_secret is None in build_netkey_packet")
+
         encrypted_key = xor_encrypt(self.network_key, self.shared_secret, "NetworkKey")
 
         packet = bytearray(15)
@@ -329,6 +336,8 @@ class CSRMeshAssociation:
         packet[5] = self.netkey_chunk_index
 
         start = self.netkey_chunk_index * 8
+        if start + 8 > len(encrypted_key):
+            start = len(encrypted_key) - 8
         packet[6:14] = encrypted_key[start:start + 8]
         packet[14] = 0x00
 
@@ -336,6 +345,9 @@ class CSRMeshAssociation:
 
     def parse_netkey_ack(self, data: bytes) -> bool:
         """Parse network key acknowledgment (opcode 0x0D)."""
+        if len(data) < 6:
+            return False
+
         decrypted = xor_masp_packet(data)
 
         if decrypted[0] != MaspOpcode.NETKEY_ACK:
