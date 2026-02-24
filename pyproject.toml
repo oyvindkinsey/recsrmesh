@@ -49,6 +49,9 @@ test = [
     "pytest-cov>=4.1.0",
 ]
 
+[project.scripts]
+mesh-tui = "recsrmesh.__main__:main"
+
 [project.urls]
 Homepage = "https://github.com/oyvindkinsey/recsrmesh"
 Repository = "https://github.com/oyvindkinsey/recsrmesh"
